@@ -48,7 +48,28 @@ ind_of_ind = np.array(index_array)
 
 max_rhs = max([len(l) for l in rhs_map])
 
-# rules 29 and 31 aren't used in the zinc data so we 
+# some rules aren't used in the GDB9 data so we 
 # 0 their masks so they can never be selected
-masks[:,29] = 0
-masks[:,31] = 0
+not_used = np.array([
+    8,  # aliphatic_organic -> 'S'
+    9,  # aliphatic_organic -> 'P'
+    11, # aliphatic_organic -> 'I'
+    12, # aliphatic_organic -> 'Cl'
+    13,  # aliphatic_organic -> 'Br'
+    17,  # aromatic_organic -> 's'
+    29,  # BACH -> charge class
+    30,  # BACH -> charge
+    31,  # BACH -> class
+    42,  # DIGIT -> '6'
+    43,  # DIGIT -> '7'
+    44,  # DIGIT -> '8'
+    49,  # charge -> '-'
+    50,  # charge -> '-' DIGIT
+    51,  # charge -> '-' DIGIT DIGIT
+    52,  # charge -> '+'
+    53,  # charge -> '+' DIGIT
+    54,  # charge -> '+' DIGIT DIGIT
+    58,  # bond -> '/'
+    59,  # bond -> '\\'
+])
+masks[:, not_used] = 0
