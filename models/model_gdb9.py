@@ -8,7 +8,7 @@ from keras.layers.wrappers import TimeDistributed
 from keras.layers.recurrent import GRU
 from keras.layers.convolutional import Convolution1D
 import tensorflow as tf
-import zinc_grammar as G
+import gdb9_grammar as G
 
 # helper variables in Keras format for parsing the grammar
 masks_K      = K.variable(G.masks)

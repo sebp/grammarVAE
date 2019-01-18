@@ -5,11 +5,11 @@ import os
 import h5py
 import numpy as np
 
-from models.model_zinc import MoleculeVAE
+from models.model_gdb9 import MoleculeVAE
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 
 import h5py
-import zinc_grammar as G
+import gdb9_grammar as G
 import pdb
 
 
@@ -20,7 +20,7 @@ MAX_LEN = 277
 DIM = len(rules)
 LATENT = 56
 EPOCHS = 100
-BATCH = 500
+BATCH = 256
 
 import logging
 import tensorflow as tf
@@ -40,20 +40,23 @@ def get_arguments():
 
 def main():
     # 0. load dataset
-    h5f = h5py.File('data/zinc_grammar_dataset.h5', 'r')
+    h5f = h5py.File('data/gdb9_grammar_dataset.h5', 'r')
     data = h5f['data'][:]
     h5f.close()
     
     # 1. split into train/test, we use test set to check reconstruction error and the % of
     # samples from prior p(z) that are valid
-    XTE = data[0:5000]
-    XTR = data[5000:]
+    end_test = 13195
+    end_train = end_test + 105552
+    end_valid = end_train + 13194
+    XTR = data[end_test:end_train]
+    XTV = data[end_train:end_valid]
 
     np.random.seed(1)
     # 2. get any arguments and define save file, then create the VAE model
     args = get_arguments()
     print('L='  + str(args.latent_dim) + ' E=' + str(args.epochs))
-    model_save = 'results/zinc_vae_grammar_L' + str(args.latent_dim) + '_E' + str(args.epochs) + '_val.hdf5'
+    model_save = 'results/gdb9_vae_grammar_L' + str(args.latent_dim) + '_E' + str(args.epochs) + '_val.hdf5'
     print(model_save)
     model = MoleculeVAE()
     print(args.load_model)
@@ -83,7 +86,7 @@ def main():
         nb_epoch = args.epochs,
         batch_size = BATCH,
         callbacks = [checkpointer, reduce_lr],
-        validation_split = 0.1)
+        validation_data = (XTV, XTV))
 
 if __name__ == '__main__':
     main()

@@ -9,7 +9,8 @@ import models.model_zinc_str
 def get_zinc_tokenizer(cfg):
     long_tokens = filter(lambda a: len(a) > 1, cfg._lexical_index.keys())
     replacements = ['$','%','^'] # ,'&']
-    assert len(long_tokens) == len(replacements)
+    assert len(long_tokens) == len(replacements), \
+            '{} != {}'.format(len(long_tokens), len(replacements))
     for token in replacements: 
         assert not cfg._lexical_index.has_key(token)
     
