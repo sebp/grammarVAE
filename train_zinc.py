@@ -20,7 +20,7 @@ MAX_LEN = 277
 DIM = len(rules)
 LATENT = 56
 EPOCHS = 100
-BATCH = 500
+BATCH = 256
 
 import logging
 import tensorflow as tf
