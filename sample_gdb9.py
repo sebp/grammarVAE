@@ -17,12 +17,13 @@ def disable_rdkit_log():
 def decode_from_latent_space(z, model):
     success = False
     smiles = set()
-    for _ in range(10):
+    for _ in range(5):
         try:
             smiles.update(model.decode(z))
         except:
             pass
 
+    assert len(smiles) > 0
     return check_smiles(smiles)
 
 
@@ -30,15 +31,14 @@ def check_smiles(smiles):
     with disable_rdkit_log():
         for smi in smiles:
             mol = Chem.MolFromSmiles(smi)
-            if mol is None:
-                continue
+            if mol is not None:
+                try:
+                    Chem.SanitizeMol(mol)
+                except ValueError:
+                    mol = None
 
-            try:
-                Chem.SanitizeMol(mol)
-            except ValueError:
-                continue
-
-            smi = Chem.MolToSmiles(mol, isomericSmiles=True)
+            if mol is not None:
+                smi = Chem.MolToSmiles(mol, isomericSmiles=True)
             yield smi
 
 
@@ -46,7 +46,7 @@ def check_smiles(smiles):
 grammar_weights = "results/gdb9_vae_grammar_L56_E100_val.hdf5"
 grammar_model = molecule_gdb9_vae.Gdb9GrammarModel(grammar_weights)
 
-n_samples = 10000
+n_samples = 250000
 batch_size = 100
 latent_rep_size = 56
 rnd = np.random.RandomState(8793)
@@ -57,11 +57,13 @@ rnd = np.random.RandomState(8793)
 
 epochs = n_samples // batch_size
 
-fout = open("generated.smi", "w")
+fout = open("gdb9-generated.smi", "w")
+i = 0
 for _ in trange(epochs):
     z1 = rnd.randn(batch_size, latent_rep_size).astype(np.float32)
     for smi in decode_from_latent_space(z1, grammar_model):
-        if smi is not None:
-            fout.write(smi)
-            fout.write("\n")
+        if smi is None:
+            smi = ''
+        fout.write("{},{}\n".format(i, smi))
+        i += 1
 fout.close()
