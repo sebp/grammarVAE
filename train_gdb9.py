@@ -18,7 +18,7 @@ rules = G.gram.split('\n')
 
 MAX_LEN = 277
 DIM = len(rules)
-LATENT = 56
+LATENT = 64
 EPOCHS = 100
 BATCH = 256
 
@@ -77,7 +77,7 @@ def main():
     reduce_lr = ReduceLROnPlateau(monitor = 'val_loss',
                                   factor = 0.2,
                                   patience = 3,
-                                  min_lr = 0.0001)
+                                  min_lr = 1e-4)
     # 5. fit the vae
     model.autoencoder.fit(
         XTR,
