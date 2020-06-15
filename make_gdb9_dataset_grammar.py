@@ -14,7 +14,7 @@ L = []
 
 count = -1
 for line in f:
-    line = line.strip()
+    line, _ = line.strip().split(None, 1)
     L.append(line)
 f.close()
 
