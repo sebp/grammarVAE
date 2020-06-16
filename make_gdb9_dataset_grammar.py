@@ -46,6 +46,6 @@ for i in trange(0, len(L), 100):
     onehot = to_one_hot(L[i:i+100])
     OH[i:i+100,:,:] = onehot
 
-h5f = h5py.File('gdb9_grammar_dataset.h5','w')
+h5f = h5py.File('data/gdb9_grammar_dataset.h5','w')
 h5f.create_dataset('data', data=OH)
 h5f.close()
