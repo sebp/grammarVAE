@@ -42,14 +42,14 @@ def check_smiles(smiles):
             yield smi
 
 
-# 1. load grammar VAE
-grammar_weights = "results/gdb9_vae_grammar_L56_E100_val.hdf5"
-grammar_model = molecule_gdb9_vae.Gdb9GrammarModel(grammar_weights)
-
 n_samples = 250000
 batch_size = 100
-latent_rep_size = 56
+latent_rep_size = 64
 rnd = np.random.RandomState(8793)
+
+# 1. load grammar VAE
+grammar_weights = "results/gdb9_vae_grammar_L{:d}_E100_val.hdf5".format(latent_rep_size)
+grammar_model = molecule_gdb9_vae.Gdb9GrammarModel(grammar_weights, latent_rep_size=latent_rep_size)
 
 # mol: decoded SMILES string
 # NOTE: decoding is stochastic so calling this function many
