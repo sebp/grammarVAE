@@ -58,6 +58,8 @@ def main():
     print('L='  + str(args.latent_dim) + ' E=' + str(args.epochs))
     model_save = 'results/gdb9_vae_grammar_L' + str(args.latent_dim) + '_E' + str(args.epochs) + '_val.hdf5'
     print(model_save)
+    if not os.path.exists(os.path.dirname(model_save)):
+        os.mkdir(os.path.dirname(model_save))
     model = MoleculeVAE()
     print(args.load_model)
 
